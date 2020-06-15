@@ -154,7 +154,7 @@ ERROR_STYLE = (
 
 ERROR_MESSAGE_TEMPLATE = (
     '<span ' + ERROR_STYLE + '>'
-    "An Exception was encountered at '<a href=\"#papermill-error-cell\">In [%s]</a>'."
+    "An Exception was encountered at In [%s] ."
     '</span>'
 )
 
