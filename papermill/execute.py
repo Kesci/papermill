@@ -154,7 +154,7 @@ ERROR_STYLE = (
 
 ERROR_MESSAGE_TEMPLATE = (
     '<span ' + ERROR_STYLE + '>'
-    "An Exception was encountered at In [%s] ."
+    "An Exception was encountered at 'In [%s]' ."
     '</span>'
 )
 
@@ -208,10 +208,29 @@ def raise_for_execution_errors(nb, output_path):
         # Write notebook back out with the Error Message at the top of the Notebook, and a link to
         # the relevant cell (by adding a note just before the failure with an HTML anchor)
         error_msg = ERROR_MESSAGE_TEMPLATE % str(error.exec_count)
-        error_msg_cell = nbformat.v4.new_markdown_cell(error_msg)
-        error_msg_cell.metadata['tags'] = [ERROR_MARKER_TAG]
-        error_anchor_cell = nbformat.v4.new_markdown_cell(ERROR_ANCHOR_MSG)
-        error_anchor_cell.metadata['tags'] = [ERROR_MARKER_TAG]
+        
+        #error_msg_cell = nbformat.v4.new_markdown_cell(error_msg)
+        
+        error_msg_cell = nbformat.v4.new_code_cell(
+            source="%%html\n" + error_msg,
+            outputs=[
+                nbformat.v4.new_output(output_type="display_data", data={"text/html": error_msg})
+            ],
+            metadata={"inputHidden": True, "hide_input": True},
+        )
+        
+        #error_msg_cell.metadata['tags'] = [ERROR_MARKER_TAG]
+        #error_anchor_cell = nbformat.v4.new_markdown_cell(ERROR_ANCHOR_MSG)
+        
+        error_anchor_cell = nbformat.v4.new_code_cell(
+            source="%%html\n" + ERROR_ANCHOR_MSG,
+            outputs=[
+                nbformat.v4.new_output(output_type="display_data", data={"text/html": ERROR_ANCHOR_MSG})
+            ],
+            metadata={"inputHidden": True, "hide_input": True},
+        )
+        
+        #error_anchor_cell.metadata['tags'] = [ERROR_MARKER_TAG]
 
         # put the anchor before the cell with the error, before all the indices change due to the
         # heading-prepending
