@@ -188,6 +188,15 @@ def papermill(
         notebook_path = notebook_path or '-'
         output_path = output_path or '-'
 
+    # mpi
+    hvd_rank = os.getenv("OMPI_COMM_WORLD_RANK")
+    try:
+        if int(hvd_rank) is not 0:
+            output_path = '-'
+    except:
+        pass
+
+        
     if output_path == '-':
         # Save notebook to stdout just once
         request_save_on_cell_execute = False
